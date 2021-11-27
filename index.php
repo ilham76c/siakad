@@ -1,7 +1,7 @@
 <?php
   session_start();
   $_SESSION['login'] = false;
-  include 'action.php';  
+  require 'action.php';  
 ?>
 <!doctype html>
 <html lang="en">
