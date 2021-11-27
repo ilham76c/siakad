@@ -3,7 +3,7 @@
   if ($_SESSION['login'] == false) {
     header("location:../../index.php");
   }
-  include '../../../koneksi.php';
+  require '../../../koneksi.php';
   $_SESSION['posisi'] = 'Profil';
 ?>
 <!DOCTYPE html>
@@ -90,24 +90,31 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php      
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT * FROM tbl_menu_user ORDER BY id");
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT * FROM tbl_menu_user ORDER BY id");
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
+
             if ($value['menu'] == 'Dashboard'){
               $l = '../../';
             }
+
             if ($value['menu'] == $_SESSION['posisi']){
               $class = 'active';
             }
-            echo '<li class="'.$class.'">
-                    <a href='.$l.''.$value['link'].'>
-                      <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
-                    </a>
-                  </li>';
-          }
-          CloseCon($con_menu);                                                  
+
+            echo '
+              <li class="'.$class.'">
+                  <a href='.$l.''.$value['link'].'>
+                    <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
+                  </a>
+              </li>
+            ';
+          }                                  
         ?>        
       </ul>
     </section>
@@ -173,9 +180,9 @@
               <!--Start creating your amazing application!-->
                 <table class="table table-bordered table-condensed table-striped">            
                   <?php
-                    $conn = OpenCon($_SESSION['db_name']);
-                    $result = $conn->query("SELECT * FROM tbl_mahasiswa WHERE nim='".$_SESSION['nim']."'");
-                    $data = mysqli_fetch_array($result);
+                    $sth = $conn->query("SELECT * FROM tbl_mahasiswa WHERE nim='".$_SESSION['nim']."'");
+                    $sth->execute();     
+                    $data = $sth->fetch(PDO::FETCH_ASSOC);
                   ?>
                   <tr>
                     <td>NIM</td><td><?php echo $data['nim'];?></td>
@@ -214,9 +221,6 @@
                     <td>Status</td><td><?php echo $data['status_'];?></td>
                   </tr>    
                 </table>
-                <?php
-                  CloseCon($conn);
-                ?>
               </div>     
               <!-- /.box-body -->       
             </div>
