@@ -15,11 +15,13 @@
 			header("location:login.php?error=2");
 			exit();
 		}
-		$conn = OpenCon('db_akun');
-		$result = $conn->query("SELECT * FROM tbl_akun WHERE username='".$username."'");
-		$data = $result->fetch_assoc();
-		CloseCon($conn);
-		if($result->num_rows == 1){						
+		
+		$conn = OpenCon();
+		$sth = $conn->query("SELECT * FROM public.tbl_akun WHERE username='".$username."' LIMIT 1");
+		$sth->execute();
+		$data = $sth->fetch(PDO::FETCH_ASSOC);
+
+		if($data){						
 			if($data['passwd'] == md5($password)){
 				// menulis session baru		
 				session_start();
@@ -36,28 +38,25 @@
 				if($data['level_'] == 2){					
 					$d = false;
 					if (substr($username, 2,2) == '04'){
-						$_SESSION['db_name'] = 'db_teknik_informatika';
-						$con = OpenCon($_SESSION['db_name']);
-						$res = $con->query("SELECT nama,jurusan FROM tbl_mahasiswa WHERE nim='".$_SESSION['nim']."'");
-						$dat = $res->fetch_assoc();
+						$res = $conn->query("SELECT nama,jurusan FROM tbl_mahasiswa WHERE nim='".$_SESSION['nim']."'");
+						$res->execute();
+						$dat = $res->fetch(PDO::FETCH_ASSOC);
 						$_SESSION['nama'] = $dat['nama'];
 						$_SESSION['jurusan'] = $dat['jurusan'];
 						$d = true;
 					}
 					if (substr($username, 2,2) == '03'){
-						$_SESSION['db_name'] = 'db_teknik_industri';
-						$con = OpenCon($_SESSION['db_name']);
 						$res = $con->query("SELECT nama,jurusan FROM tbl_mahasiswa WHERE nim='".$_SESSION['nim']."'");
-						$dat = $res->fetch_assoc();
+						$res->execute();
+						$dat = $res->fetch(PDO::FETCH_ASSOC);
 						$_SESSION['nama'] = $dat['nama'];
 						$_SESSION['jurusan'] = $dat['jurusan'];
 						$d = true;
 					}
 					if (substr($username, 2,2) == '02'){
-						$_SESSION['db_name'] = 'db_teknik_mesin';
-						$con = OpenCon($_SESSION['db_name']);
 						$res = $con->query("SELECT nama,jurusan FROM tbl_mahasiswa WHERE nim='".$_SESSION['nim']."'");
-						$dat = $res->fetch_assoc();
+						$res->execute();
+						$dat = $res->fetch(PDO::FETCH_ASSOC);
 						$_SESSION['nama'] = $dat['nama'];
 						$_SESSION['jurusan'] = $dat['jurusan'];
 						$d = true;
@@ -79,6 +78,7 @@
 			header("location:index.php?error=4");
 			exit();
 		}
+		CloseCon($conn);
 	}
 	// check parameter error pada url dari auth
 	$error = "";
@@ -104,33 +104,4 @@
 				break;
 		}
 	}
-		//$query = "INSERT into uspas (user_,pass) values('".$user."','".$pass."')";
-		//$query = "SELECT * FROM tbl_akun WHERE username='".$username."'";
-		/*$success = $conn->query($query);
-		$result=mysqli_query($conn,$query);
-		$data = mysqli_fetch_array($result);
-		$count=mysqli_num_rows($result);
-		if($count==1){		
-			if($password == $data['passwd']){		
-				$_SESSION['username'] = $username;
-				if($data['level_'] == 1){				
-					header("location:./admin/index.html");
-				}
-				if($data['level_'] == 2){
-					header("locarion:./user/index.html");
-				}
-			}else{
-				header("location:login.php");
-			}
-		}else{
-			//echo "gagal";
-			//$message = "wrong answer";
-			//echo "<script type='text/javascript'>alert('$message');</script>";
-		}
-		if(!$success){
-			die("Sql query error: ".$conn->error);
-		}	
-		//$conn->close();
-		CloseCon($conn);
-		//ob_end_flush();*/
 ?>
