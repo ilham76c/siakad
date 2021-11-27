@@ -37,10 +37,10 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
   <?php
     function deleteKRS(){            
-      $conn = OpenCon($_SESSION['db_name']);              
+      $conn = OpenCon();
       $id = trim($_GET['id']);
-      $result = $conn->query("DELETE FROM tbl_krs WHERE id='".$id."'");
-      CloseCon($conn);
+      $conn->query("DELETE FROM tbl_krs WHERE id='".$id."'");
+      // $sth->execute();
       //echo "<script>deleteRow();</script>";                    
     }
   ?>  
@@ -116,24 +116,31 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php      
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT * FROM tbl_menu_user ORDER BY id");
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT * FROM tbl_menu_user ORDER BY id");
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
+
             if ($value['menu'] == 'Dashboard'){
               $l = '../../';
             }
+
             if ($value['menu'] == $_SESSION['posisi']){
               $class = 'active';
             }
-            echo '<li class="'.$class.'">
-                    <a href='.$l.''.$value['link'].'>
-                      <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
-                    </a>
-                  </li>';
+
+            echo '
+              <li class="'.$class.'">
+                <a href='.$l.''.$value['link'].'>
+                  <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
+                </a>
+              </li>
+            ';
           }
-          CloseCon($con_menu);                                                  
         ?>
       </ul>
     </section>
@@ -194,10 +201,12 @@
               </thead>
               <tbody>
                 <?php
-                  $conn = OpenCon($_SESSION['db_name']);
-                  $result = $conn->query("SELECT id,kode,matakuliah,sks FROM tbl_krs WHERE nim='".$_SESSION['nim']."'");
+                  $sth = $conn->query("SELECT id,kode,matakuliah,sks FROM tbl_krs WHERE nim='".$_SESSION['nim']."'");
+                  $sth->execute();     
+                  $data = $sth->fetchAll();
+
                   $no = 1;
-                  while ($value = mysqli_fetch_array($result)) {
+                  foreach ($data as $key => $value) {
                     echo '<tr>
                             <td>'.$no.'</td>
                             <td>'.$value['kode'].'</td>
@@ -207,7 +216,6 @@
                           </tr>';
                     $no++;
                   }
-                  CloseCon($conn);
                 ?>
               </tbody>
             </table>
