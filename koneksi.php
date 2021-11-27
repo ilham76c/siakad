@@ -1,22 +1,28 @@
 <?php
+	$connection = null;
+
 	function OpenCon() : object
 	{    	
 		try{
-			$conn = new PDO("pgsql:host=127.0.0.1;dbname=siakad;port=5432", 'postgres', 'postgres');
+			if ($connection === null) {
+				$conn = new PDO("pgsql:host=127.0.0.1;dbname=siakad;port=5432", 'postgres', 'postgres');
 		   
-			if(conn){
-				return $conn;
+				if(conn){
+					return $conn;
+				}
+
+				return 'Something went wrong!';
 			}
 
-			return 'Something went wrong!';
+			return $connection;
 		} catch (PDOException $e) {
 			echo $e->getMessage();
 		}
     }
-    function CloseCon($conn) 
+    function CloseCon() 
 	{
 		try {
-			$conn->close();
+			$connection = null;
 		} catch (PDOException $e) {
 			echo $e->getMessage();
 		}
