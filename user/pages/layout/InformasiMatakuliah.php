@@ -4,7 +4,7 @@
   if ($_SESSION['login'] == false) {
     header("location:../../index.php");
   }
-  include '../../../koneksi.php';
+  require '../../../koneksi.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -90,9 +90,12 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php      
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT * FROM tbl_menu_user ORDER BY id");      
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT * FROM tbl_menu_user ORDER BY id");      
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
             if ($value['menu'] == 'Dashboard'){
@@ -107,7 +110,7 @@
                     </a>
                   </li>';
           }
-          CloseCon($con_menu);                                                  
+          // CloseCon($con_menu);                                                  
         ?>        
       </ul>
     </section>
@@ -163,11 +166,11 @@
             <!-- tambahan test sliding untuk per paket semester -->
    <div style="clear:both">
       <?php        
-        if(isset($_GET['lihat'])){
-          if(!empty($_GET['prodi'])){
-            $conn = OpenCon('db_'.$_GET['prodi'].'');            
-          }
-        }
+        // if(isset($_GET['lihat'])){
+        //   if(!empty($_GET['prodi'])){
+        //     $conn = OpenCon();
+        //   }
+        // }
       ?>
       <a name="smstr_1" class="btn-block" href="#semester_1" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="semester_1" hidden>Paket Semester 1</a><br>
       <div id="semester_1" class="collapse">            
@@ -183,10 +186,13 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){
-              $result = $conn->query("SELECT * FROM tbl_matkul_semester_1");      
-              if ($result != null){
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+              $sth->execute();     
+              $data = $sth->fetchAll();
+
+              if ($data){
                 $no = 1;
-                foreach ($result as $key => $value) {                  
+                foreach ($data as $key => $value) {                  
                   echo '<tr>
                         <td>'.$no.'</td>
                         <td>'.$value['kode'].'</td>
@@ -217,10 +223,13 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){
-              $result = $conn->query("SELECT * FROM tbl_matkul_semester_2");      
-              if ($result != null){
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah");  
+              $sth->execute();     
+              $data = $sth->fetchAll();    
+
+              if ($data) {
                 $no = 1;
-                foreach ($result as $key => $value) {                  
+                foreach ($data as $key => $value) {                  
                   echo '<tr>
                         <td>'.$no.'</td>
                         <td>'.$value['kode'].'</td>
@@ -252,10 +261,13 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $result = $conn->query("SELECT * FROM tbl_matkul_semester_3");      
-              if ($result != null){
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah");
+              $sth->execute();     
+              $data = $sth->fetchAll(); 
+
+              if ($data) {
                 $no = 1;
-                foreach ($result as $key => $value) {                  
+                foreach ($data as $key => $value) {                  
                   echo '<tr>
                         <td>'.$no.'</td>
                         <td>'.$value['kode'].'</td>
@@ -287,10 +299,13 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $result = $conn->query("SELECT * FROM tbl_matkul_semester_4");      
-              if ($result != null){
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah");
+              $sth->execute();     
+              $data = $sth->fetchAll(); 
+
+              if ($data){
                 $no = 1;
-                foreach ($result as $key => $value) {                  
+                foreach ($data as $key => $value) {                  
                   echo '<tr>
                         <td>'.$no.'</td>
                         <td>'.$value['kode'].'</td>
@@ -322,10 +337,13 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $result = $conn->query("SELECT * FROM tbl_matkul_semester_5");      
-              if ($result != null){
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+              $sth->execute();     
+              $data = $sth->fetchAll();
+
+              if ($data) {
                 $no = 1;
-                foreach ($result as $key => $value) {                  
+                foreach ($data as $key => $value) {                  
                   echo '<tr>
                         <td>'.$no.'</td>
                         <td>'.$value['kode'].'</td>
@@ -357,10 +375,13 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $result = $conn->query("SELECT * FROM tbl_matkul_semester_6");      
-              if ($result != null){
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+              $sth->execute();     
+              $data = $sth->fetchAll();
+
+              if ($data) {
                 $no = 1;
-                foreach ($result as $key => $value) {                  
+                foreach ($data as $key => $value) {                  
                   echo '<tr>
                         <td>'.$no.'</td>
                         <td>'.$value['kode'].'</td>
@@ -391,10 +412,13 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $result = $conn->query("SELECT * FROM tbl_matkul_semester_7");      
-              if ($result != null){
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+              $sth->execute();     
+              $data = $sth->fetchAll();
+
+              if ($data){
                 $no = 1;
-                foreach ($result as $key => $value) {                  
+                foreach ($data as $key => $value) {                  
                   echo '<tr>
                         <td>'.$no.'</td>
                         <td>'.$value['kode'].'</td>
@@ -425,10 +449,13 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $result = $conn->query("SELECT * FROM tbl_matkul_semester_8");      
-              if ($result != null){
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+              $sth->execute();     
+              $data = $sth->fetchAll();
+
+              if ($data){
                 $no = 1;
-                foreach ($result as $key => $value) {                  
+                foreach ($data as $key => $value) {                  
                   echo '<tr>
                         <td>'.$no.'</td>
                         <td>'.$value['kode'].'</td>
