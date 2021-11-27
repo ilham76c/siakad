@@ -17,7 +17,7 @@
 		}
 		
 		$conn = OpenCon();
-		$sth = $conn->query("SELECT * FROM public.tbl_akun WHERE username='".$username."' LIMIT 1");
+		$sth = $conn->query("SELECT * FROM tbl_akun WHERE username='".$username."' LIMIT 1");
 		$sth->execute();
 		$data = $sth->fetch(PDO::FETCH_ASSOC);
 
