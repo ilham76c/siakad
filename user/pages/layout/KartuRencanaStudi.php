@@ -212,7 +212,7 @@
                             <td>'.$value['kode'].'</td>
                             <td>'.$value['matakuliah'].'</td>
                             <td>'.$value['sks'].'</td>
-                            <td><a onclick="deleteRow(this)" href="?id='.$value['id'].'">Hapus</a></td>
+                            <td><a onclick="deleteRow(this)" href="?id='.$value['id'].'"><i class="fa fa-trash text-danger"></i></a></td>
                           </tr>';
                     $no++;
                   }
