@@ -4,7 +4,7 @@
   if ($_SESSION['login'] == false) {
     header("location:../../index.php");
   }
-  include '../../../koneksi.php';
+  require '../../../koneksi.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -99,24 +99,31 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php      
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT * FROM tbl_menu_user ORDER BY id");
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT * FROM tbl_menu_user ORDER BY id");      
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
+
             if ($value['menu'] == 'Dashboard'){
               $l = '../../';
             }
+
             if ($value['menu'] == $_SESSION['posisi']){
               $class = 'active';
             }
-            echo '<li class="'.$class.'">
-                    <a href='.$l.''.$value['link'].'>
-                      <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
-                    </a>
-                  </li>';
-          }
-          CloseCon($con_menu);                                                  
+
+            echo '
+              <li class="'.$class.'">
+                <a href='.$l.''.$value['link'].'>
+                  <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
+                </a>
+              </li>
+            ';
+          }                                                
         ?>
         
       </ul>
@@ -192,10 +199,12 @@
                   </tr>
                   </thead>
                   <?php
-                    $conn = OpenCon($_SESSION['db_name']);
-                    $result = $conn->query("SELECT semester,kode,matakuliah,sks,nilai FROM tbl_transkrip_nilai WHERE nim='".$_SESSION['nim']."' ORDER BY semester");
+                    $sth = $conn->query("SELECT semester,kode,matakuliah,sks,nilai FROM tbl_transkrip_nilai WHERE nim='".$_SESSION['nim']."' ORDER BY semester");
+                    $sth->execute();     
+                    $data = $sth->fetchAll();
+
                     $no = 1;
-                    foreach ($result as $key => $value) {
+                    foreach ($data as $key => $value) {
                       echo '<tr>
                               <td>'.$no.'</td>
                               <td>Semester '.$value['semester'].'</td>
@@ -206,7 +215,6 @@
                             </tr>';
                       $no++;
                     }
-                    CloseCon($conn);
                   ?>
                 </table>
               </div>
