@@ -36,23 +36,35 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
   <?php
-    function deleteKRS(){            
+    function deleteKRS(){     
       $conn = OpenCon();
-      $id = trim($_GET['id']);
-      $conn->query("DELETE FROM tbl_krs WHERE id='".$id."'");
-      // $sth->execute();
-      //echo "<script>deleteRow();</script>";                    
+      $id = $_GET['id'] ? trim($_GET['id']) : false;
+      
+      if ($id) {
+        $conn->query("DELETE FROM tbl_krs WHERE id='".$id."'");
+      }
+      
     }
   ?>  
   <script type="text/javascript">    
-    function deleteRow(r){      
-      var i = r.parentNode.parentNode.rowIndex;      
-      document.getElementById('table_krs').deleteRow(i);
-      //var target = document.getElementById('table_akun').rows[i].cells[0].innerHTML;  
-      document.write('<?php deleteKRS();?>');          
+    function deleteRow(id){      
+      const isDel = confirm("Hapus matakuliah?");
+      
+      if (isDel === true) {
+        // Construct URLSearchParams object instance from current URL querystring.
+        const queryParams = new URLSearchParams();
+        
+        // Set new or modify existing parameter value. 
+        queryParams.set("id", id);
+          
+        // Replace current querystring with the new one.
+        history.replaceState(null, null, "?"+queryParams.toString());
+        
+        document.write(`<?php deleteKRS();?>`);
+        window.location.reload();
+      }
     }
-  </script>
-  <script type="text/javascript">
+
     function printDiv(divName){
       var printContents = document.getElementById(divName).innerHTML;
       var originalContents = document.body.innerHTML;
@@ -212,7 +224,11 @@
                             <td>'.$value['kode'].'</td>
                             <td>'.$value['matakuliah'].'</td>
                             <td>'.$value['sks'].'</td>
-                            <td><a onclick="deleteRow(this)" href="?id='.$value['id'].'"><i class="fa fa-trash text-danger"></i></a></td>
+                            <td>
+                              <button class="btn btn-link" onclick="deleteRow('.$value['id'].')">
+                                <i class="fa fa-trash text-danger"></i>
+                              </button>
+                            </td>
                           </tr>';
                     $no++;
                   }
