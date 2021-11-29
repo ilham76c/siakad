@@ -1,10 +1,8 @@
 <?php  
     function test_input($data) {
-      $data = trim($data);
-      $data = stripslashes($data);
-      $data = htmlspecialchars($data);
-      return $data;
+      return htmlspecialchars(stripslashes(trim($data)));
     }
+
     // define variables and set to empty values
     $passwordLamaErr = $passwordBaruErr = $passwordConfirmBaruErr = "";
     $passwordLama = $passwordBaru = $passwordConfirmBaru = "";
@@ -33,13 +31,16 @@
               $passwordLamaErr = "Password Salah!!";
             }
           }
+          
           //CEK PASSWORD BARU
           if(empty($_POST["passwordBaru"])){
             $passwordBaruErr = "Masukkan Password Baru!!";
           }
+
           if(empty($_POST["passwordConfirmBaru"])){
             $passwordConfirmBaruErr = "Masukkan Password Baru!!";
           }
+
           if(!empty($_POST["passwordBaru"]) && !empty($_POST["passwordConfirmBaru"])){
             $passwordBaru = test_input($_POST['passwordBaru']);
             $passwordConfirmBaru = test_input($_POST['passwordConfirmBaru']);
