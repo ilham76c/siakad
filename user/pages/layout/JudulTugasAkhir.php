@@ -4,7 +4,7 @@
   if ($_SESSION['login'] == false) {
     header("location:../../index.php");
   }
-  include '../../../koneksi.php';
+  require '../../../koneksi.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -90,9 +90,12 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php              
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT * FROM tbl_menu_user ORDER BY id");      
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT * FROM tbl_menu_user ORDER BY id");      
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
             if ($value['menu'] == 'Dashboard'){
@@ -167,21 +170,27 @@
             </thead>
             <tbody>
               <?php                
-                $conn = OpenCon('db_judul_ta');
+                // $conn = OpenCon('db_judul_ta');
+                $sth;
                 if (isset($_GET['cari'])) {                      
-                  $result = $conn->query("SELECT judul,nim,nama,prodi FROM tbl_judul_ta WHERE judul LIKE '%".$_GET['judulTA']."%'");
+                  $sth = $conn->query("SELECT judul,nim,nama,prodi FROM tbl_judul_ta WHERE judul ILIKE '%".$_GET['judulTA']."%'");
                 }else{
-                  $result = $conn->query("SELECT judul,nim,nama,prodi FROM tbl_judul_ta");
-                }              
+                  $sth = $conn->query("SELECT judul,nim,nama,prodi FROM tbl_judul_ta");
+                }       
+                $sth->execute();     
+                $data = $sth->fetchAll();
+      
                 $no = 1;
-                while ($value = mysqli_fetch_array($result)) {
-                  echo '<tr>
-                          <td>'.$no.'</td>
-                          <td>'.$value['judul'].'</td>
-                          <td>'.$value['nim'].'</td>
-                          <td>'.$value['nama'].'</td>
-                          <td>'.$value['prodi'].'</td>
-                        </tr>';
+                foreach ($data as $key => $value) {       
+                  echo '
+                    <tr>
+                      <td>'.$no.'</td>
+                      <td>'.$value['judul'].'</td>
+                      <td>'.$value['nim'].'</td>
+                      <td>'.$value['nama'].'</td>
+                      <td>'.$value['prodi'].'</td>
+                    </tr>
+                  ';
                   $no++;
                 }
               ?>          
