@@ -4,7 +4,7 @@
   if ($_SESSION['login'] == false) {
     header("location:../../index.php");
   }
-  include '../../../koneksi.php';
+  require '../../../koneksi.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -90,22 +90,30 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php      
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT * FROM tbl_menu_user ORDER BY id");      
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT * FROM tbl_menu_user ORDER BY id");
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
+
             if ($value['menu'] == 'Dashboard'){
               $l = '../../';
             }
+
             if ($value['menu'] == $_SESSION['posisi']){
               $class = 'active';
             }
-            echo '<li class="'.$class.'">
-                    <a href='.$l.''.$value['link'].'>
-                      <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
-                    </a>
-                  </li>';
+
+            echo '
+              <li class="'.$class.'">
+                <a href='.$l.''.$value['link'].'>
+                  <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
+                </a>
+              </li>
+            ';
           }
           CloseCon($con_menu);                                                  
         ?>        
@@ -159,10 +167,12 @@
                   <select name="semester" class="select form-control">
                     <option selected disabled hidden>- Semester -</option>
                     <?php
-                      $conn = OpenCon($_SESSION['db_name']);
-                      $result = $conn->query("SELECT semester FROM tbl_transkrip_nilai WHERE nim='".$_SESSION['nim']."' GROUP BY semester");
-                      $var_semester = array();
-                      while($value = mysqli_fetch_array($result)) {
+                      $sth = $conn->query("SELECT semester FROM tbl_transkrip_nilai WHERE nim='".$_SESSION['nim']."' GROUP BY semester");
+                      $sth->execute();     
+                      $data = $sth->fetchAll();
+
+                      $var_semester = [];
+                      foreach ($data as $key => $value) {
                         $selected = '';
                         if($_GET["semester"] == $value['semester']){
                           $selected = 'selected';
@@ -170,7 +180,6 @@
                         echo '<option value="'.$value['semester'].'" '.$selected.'>'.$value['semester'].'</option>';
                         array_push($var_semester, $value['semester']);
                       }
-                      CloseCon($conn);
                     ?>                    
                   </select>                  
                 </div>                
@@ -209,9 +218,11 @@
               $ip = '';
               $ipk = '';
               if (isset($_GET['lihat'])) {
-                $conn = OpenCon($_SESSION['db_name']);
-                $result = $conn->query("SELECT semester,kode,matakuliah,sks,nilai FROM tbl_transkrip_nilai WHERE semester='".$_GET['semester']."' AND nim='".$_SESSION['nim']."'");
-                foreach ($result as $key => $value) {
+                $sth = $conn->query("SELECT semester,kode,matakuliah,sks,nilai FROM tbl_transkrip_nilai WHERE semester='".$_GET['semester']."' AND nim='".$_SESSION['nim']."'");
+                $sth->execute();     
+                $data = $sth->fetchAll();
+
+                foreach ($data as $key => $value) {
                   echo '<tr>
                           <td>'.$value['semester'].'</td>
                           <td>'.$value['kode'].'</td>
@@ -224,7 +235,7 @@
                 $jumlah = 0;
                 $sks = 0;
                 $nilai = array('A' => 4.0, 'B+' => 3.5, 'B' => 3.0, 'C+' => 2.5, 'C' => 2.0, 'D+' => 1.5, 'D' => 1.0);
-                foreach ($result as $key => $value) {
+                foreach ($data as $key => $value) {
                     $hasmen = $nilai[$value['nilai']] * $value['sks'];
                     $sks = $sks + $value['sks'];
                     $jumlah = $jumlah + $hasmen;
@@ -235,15 +246,17 @@
                 $sks_ipk = 0;
                 $jumlah_ipk = 0;
                 foreach ($var_semester as $key) {
-                  $result = $conn->query("SELECT sks,nilai FROM tbl_transkrip_nilai WHERE semester='".$key."' AND nim='".$_SESSION['nim']."'");
-                  foreach ($result as $key => $value) {
+                  $sth = $conn->query("SELECT sks,nilai FROM tbl_transkrip_nilai WHERE semester='".$key."' AND nim='".$_SESSION['nim']."'");
+                  $sth->execute();     
+                  $data = $sth->fetchAll();
+
+                  foreach ($data as $key => $value) {
                     $hasmen = $nilai[$value['nilai']] * $value['sks'];
                     $sks_ipk = $sks_ipk + $value['sks'];
                     $jumlah_ipk = $jumlah_ipk + $hasmen;
                   }
                 }
                 $ipk = $jumlah_ipk / $sks_ipk;
-                CloseCon($conn);
               }
             ?>
             </tbody>
