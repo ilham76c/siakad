@@ -4,8 +4,8 @@
   if ($_SESSION['login'] == false) {
     header("location:../../index.php");
   }
-  include '../../.././cek/cek_MenuUbahPassword.php';
-  include '../../../koneksi.php';
+  require '../../../koneksi.php';
+  require '../../.././cek/cek_MenuUbahPassword.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -94,9 +94,12 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php      
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT * FROM tbl_menu_user ORDER BY id");
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT * FROM tbl_menu_user ORDER BY id");      
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
             if ($value['menu'] == 'Dashboard'){
@@ -105,11 +108,13 @@
             if ($value['menu'] == $_SESSION['posisi']){
               $class = 'active';
             }
-            echo '<li class="'.$class.'">
-                    <a href='.$l.''.$value['link'].'>
-                      <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
-                    </a>
-                  </li>';
+            echo '
+              <li class="'.$class.'">
+                <a href='.$l.''.$value['link'].'>
+                  <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
+                </a>
+              </li>
+            ';
           }
           //CloseCon($con_menu);                                                  
         ?>        
