@@ -3,8 +3,8 @@
   if ($_SESSION['login'] == false) {
     header("location:../../../index.php");
   }
-  include '../../../koneksi.php';
-  include '../../.././cek/cek_MenuAkun.php';
+  require '../../../koneksi.php';
+  require '../../.././cek/cek_MenuAkun.php';
   $_SESSION['posisi'] = 'Kelola Akun';
 ?>
 <!DOCTYPE html>
@@ -38,11 +38,11 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
   <?php             
-    $conn = OpenCon('db_akun');              
+    $conn = OpenCon();              
     $username = trim($_GET['un']);          
-    $result = $conn->query("SELECT username,email,passwd,level_ FROM tbl_akun WHERE username='".$username."'");
-    $row = $result->fetch_assoc();
-    CloseCon($conn);        
+    $sth = $conn->query("SELECT username,email,passwd,level_ FROM tbl_akun WHERE username='".$username."'");
+    $sth->execute();
+		$row = $sth->fetch(PDO::FETCH_ASSOC);
   ?> 
 </head>
 <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
@@ -99,9 +99,12 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php      
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT menu,icon,link,sub FROM tbl_menu_admin ORDER BY id");      
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT menu,icon,link,sub FROM tbl_menu_admin ORDER BY id");      
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
             if ($value['menu'] == 'Dashboard'){
@@ -113,27 +116,32 @@
             if ($value['sub'] == 'yes'){
               $class = 'treeview '.$class;
             }
-            echo '<li class="'.$class.'">
-                    <a href='.$l.''.$value['link'].'>
-                      <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>';
-                      if ($value['sub'] == 'yes'){
-                        echo '<span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                              </span>';
-                      }
-                    echo '</a>';
+            echo '
+              <li class="'.$class.'">
+                <a href='.$l.''.$value['link'].'>
+                  <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>';
+                  if ($value['sub'] == 'yes'){
+                    echo '
+                      <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                      </span>
+                    ';
+                  }
+                echo '</a>';
 
-                    if ($value['sub'] == 'yes'){
-                      $result_submenu = $con_menu->query("SELECT submenu,icon,link FROM tbl_submenu_admin WHERE menu='".$value['menu']."'");      
-                      echo '<ul class="treeview-menu">';
-                      foreach ($result_submenu as $key => $value) {
-                        echo '<li><a href="../layout/'.$value['link'].'"><i class="'.$value['icon'].'"></i>'.$value['submenu'].'</a></li>';                              
-                      }
-                      echo '</ul>';
-                    }
+                if ($value['sub'] == 'yes'){
+                  $sth = $conn->query("SELECT submenu,icon,link FROM tbl_submenu_admin WHERE menu='".$value['menu']."'");      
+                  $sth->execute();     
+                  $submenu = $sth->fetchAll();
+
+                  echo '<ul class="treeview-menu">';
+                  foreach ($submenu as $key => $value) {
+                    echo '<li class="'.($value['submenu'] === 'Edit Akun' ? 'active' : '').'"><a href="../layout/'.$value['link'].'"><i class="'.$value['icon'].'"></i>'.$value['submenu'].'</a></li>';                              
+                  }
+                  echo '</ul>';
+                }
             echo '</li>';
-          }
-          CloseCon($con_menu);                                                  
+          }                                          
         ?>
       </ul>
     </section>

@@ -180,11 +180,7 @@
           </div>
         </div>
         <div class="box-body">
-          <!--Start creating your amazing application!-->
-          <?php
-            $conn = OpenCon('db_akun');
-            $result = $conn->query("SELECT * FROM tbl_akun");
-          ?>          
+          <!--Start creating your amazing application!-->  
           <table class="table table-bordered table-striped" id="table_akun">
             <thead>
               <tr>
@@ -197,16 +193,21 @@
             </thead>
             <tbody>
               <?php
-                foreach ($result as $key => $value) {                
-                  echo '<tr>
-                        <td>'.$value['username'].'</td>
-                        <td>'.$value['email'].'</td>
-                        <td>'.$value['passwd'].'</td>
-                        <td>'.$value['level_'].'</td>                        
-                        <td><a href=".././forms/FormEditAkun.php?un='.$value['username'].'">Edit</a></td>
-                        </tr>';
-                }
-                CloseCon($conn);
+              $sth = $conn->query("SELECT * FROM tbl_akun");
+              $sth->execute();     
+              $data = $sth->fetchAll();
+
+              foreach ($data as $key => $value) {              
+                echo '
+                  <tr>
+                    <td>'.$value['username'].'</td>
+                    <td>'.$value['email'].'</td>
+                    <td>'.$value['passwd'].'</td>
+                    <td>'.$value['level_'].'</td>                        
+                    <td><a href=".././forms/FormEditAkun.php?un='.$value['username'].'">Edit</a></td>
+                  </tr>
+                ';
+              }
               ?>
             </tbody>
           </table>                    
