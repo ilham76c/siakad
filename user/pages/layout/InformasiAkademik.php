@@ -4,7 +4,7 @@
   if ($_SESSION['login'] == false) {
     header("location:../../index.php");
   }
-  include '../../../koneksi.php';
+  require '../../../koneksi.php';
 ?>
 <!DOCTYPE html>
 <html>
