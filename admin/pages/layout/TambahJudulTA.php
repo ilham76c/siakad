@@ -4,8 +4,8 @@
   if ($_SESSION['login'] == false) {
     header("location:../../index.php");
   }
-  include '../../.././cek/cek_MenuUbahPassword.php';
-  include '../../../koneksi.php';
+  require '../../.././cek/cek_MenuUbahPassword.php';
+  require '../../../koneksi.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -94,41 +94,53 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php      
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT menu,icon,link,sub FROM tbl_menu_admin ORDER BY id");      
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT menu,icon,link,sub FROM tbl_menu_admin ORDER BY id");      
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
             if ($value['menu'] == 'Dashboard'){
               $l = '../../';
             }
+
             if ($value['menu'] == $_SESSION['posisi']){
               $class = 'active';
             }
+
             if ($value['sub'] == 'yes'){
               $class = 'treeview '.$class;
             }
-            echo '<li class="'.$class.'">
-                    <a href='.$l.''.$value['link'].'>
-                      <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>';
-                      if ($value['sub'] == 'yes'){
-                        echo '<span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                              </span>';
-                      }
-                    echo '</a>';
 
-                    if ($value['sub'] == 'yes'){
-                      $result_submenu = $con_menu->query("SELECT submenu,icon,link FROM tbl_submenu_admin WHERE menu='".$value['menu']."'");      
-                      echo '<ul class="treeview-menu">';
-                      foreach ($result_submenu as $key => $value) {
-                        echo '<li><a href="../layout/'.$value['link'].'"><i class="'.$value['icon'].'"></i>'.$value['submenu'].'</a></li>';                              
-                      }
-                      echo '</ul>';
-                    }
+            echo '
+              <li class="'.$class.'">
+                <a href='.$l.''.$value['link'].'>
+                  <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>';
+                  if ($value['sub'] == 'yes'){
+                    echo '
+                      <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                      </span>
+                    ';
+                  }
+              echo '
+                </a>
+              ';
+
+              if ($value['sub'] == 'yes'){
+                $sth = $conn->query("SELECT submenu,icon,link FROM tbl_submenu_admin WHERE menu='".$value['menu']."'");      
+                $sth->execute();     
+                $submenu = $sth->fetchAll();
+                echo '<ul class="treeview-menu">';
+                foreach ($submenu as $key => $value) {
+                  echo '<li class="'.($value['submenu'] === 'Tambah Judul' ? 'active' : '').'"><a href="../layout/'.$value['link'].'"><i class="'.$value['icon'].'"></i>'.$value['submenu'].'</a></li>';                              
+                }
+                echo '</ul>';
+              }
             echo '</li>';
-          }
-          CloseCon($con_menu);                                                  
+          }                                                      
         ?>        
       </ul>
     </section>
