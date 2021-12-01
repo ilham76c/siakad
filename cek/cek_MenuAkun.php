@@ -65,7 +65,7 @@
       $conn = OpenCon();
       if ($_POST['tombol'] == 'tambah') {     
         if($validUsername==true && $validPassword==true && $validEmail==true && $validLevel==true){              
-          $conn->query("INSERT INTO tbl_akun VALUES('".$_POST['username']."','".$_POST['email']."','".md5($_POST['passwd'])."',".$_POST['level'].")");
+          $conn->query("INSERT INTO tbl_akun(username,email,passwd,level_) VALUES('".$_POST['username']."','".$_POST['email']."','".md5($_POST['passwd'])."',".$_POST['level'].")");
           echo "<script>alert('Data Berhasil Ditambah')</script>";
         }
       }
