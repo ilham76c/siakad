@@ -90,24 +90,31 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php      
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT * FROM tbl_menu_user ORDER BY id");      
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT * FROM tbl_menu_user ORDER BY id");      
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
+
             if ($value['menu'] == 'Dashboard'){
               $l = '../../';
             }
+
             if ($value['menu'] == $_SESSION['posisi']){
               $class = 'active';
             }
-            echo '<li class="'.$class.'">
-                    <a href='.$l.''.$value['link'].'>
-                      <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
-                    </a>
-                  </li>';
-          }
-          CloseCon($con_menu);                                                  
+
+            echo '
+              <li class="'.$class.'">
+                <a href='.$l.''.$value['link'].'>
+                  <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>
+                </a>
+              </li>
+            ';
+          }                                                
         ?>        
       </ul>
     </section>
@@ -150,9 +157,6 @@
           </div>-->
         </div>
       <div class="box-body">          
-          <?php
-            $conn = OpenCon($_SESSION['db_name']);
-          ?>
         <form method="post">
             <!-- tambahan test sliding untuk per paket semester -->
           <div style="clear:both">        
@@ -170,10 +174,13 @@
                   <th>+</th>
                 </tr>
                 <?php                  
-                  $result = $conn->query("SELECT * FROM tbl_matkul_semester_1");      
-                  if ($result != null){
+                  $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+                  $sth->execute();     
+                  $data = $sth->fetchAll();
+    
+                  if ($data){
                     $no = 1;
-                    foreach ($result as $key => $value) {                  
+                    foreach ($data as $key => $value) {                  
                       echo '<tr>
                               <td>'.$no.'</td>
                               <td>'.$value['kode'].'</td>
@@ -205,10 +212,13 @@
                   <th>+</th>
                 </tr>
                 <?php                  
-                  $result = $conn->query("SELECT * FROM tbl_matkul_semester_2");      
-                  if ($result != null){
+                  $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+                  $sth->execute();     
+                  $data = $sth->fetchAll();
+    
+                  if ($data){
                     $no = 1;
-                    foreach ($result as $key => $value) {                  
+                    foreach ($data as $key => $value) {                  
                       echo '<tr>
                               <td>'.$no.'</td>
                               <td>'.$value['kode'].'</td>
@@ -240,10 +250,13 @@
                   <th>+</th>
                 </tr>
                 <?php                    
-                  $result = $conn->query("SELECT * FROM tbl_matkul_semester_3");      
-                  if ($result != null){
+                  $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+                  $sth->execute();     
+                  $data = $sth->fetchAll();
+    
+                  if ($data){
                     $no = 1;
-                    foreach ($result as $key => $value) {                  
+                    foreach ($data as $key => $value) {                  
                       echo '<tr>
                               <td>'.$no.'</td>
                               <td>'.$value['kode'].'</td>
@@ -275,10 +288,13 @@
                   <th>+</th>
                 </tr>
                 <?php                    
-                  $result = $conn->query("SELECT * FROM tbl_matkul_semester_4");      
-                  if ($result != null){
+                  $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+                  $sth->execute();     
+                  $data = $sth->fetchAll();
+    
+                  if ($data){
                     $no = 1;
-                    foreach ($result as $key => $value) {                  
+                    foreach ($data as $key => $value) {                  
                       echo '<tr>
                               <td>'.$no.'</td>
                               <td>'.$value['kode'].'</td>
@@ -310,10 +326,13 @@
                   <th>+</th>
                 </tr>
                 <?php                    
-                  $result = $conn->query("SELECT * FROM tbl_matkul_semester_5");      
-                  if ($result != null){
+                  $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+                  $sth->execute();     
+                  $data = $sth->fetchAll();
+    
+                  if ($data){
                     $no = 1;
-                    foreach ($result as $key => $value) {                  
+                    foreach ($data as $key => $value) {                  
                       echo '<tr>
                               <td>'.$no.'</td>
                               <td>'.$value['kode'].'</td>
@@ -344,10 +363,13 @@
                   <th width="5%">SKS</th>
                 </tr>
                 <?php
-                  $result = $conn->query("SELECT * FROM tbl_matkul_semester_6");      
-                  if ($result != null){
+                  $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+                  $sth->execute();     
+                  $data = $sth->fetchAll();
+    
+                  if ($data){
                     $no = 1;
-                    foreach ($result as $key => $value) {                  
+                    foreach ($data as $key => $value) {                  
                       echo '<tr>
                               <td>'.$no.'</td>
                               <td>'.$value['kode'].'</td>
@@ -379,10 +401,13 @@
                   <th>+</th>
                 </tr>
                 <?php                    
-                  $result = $conn->query("SELECT * FROM tbl_matkul_semester_7");      
-                  if ($result != null){
+                  $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+                  $sth->execute();     
+                  $data = $sth->fetchAll();
+    
+                  if ($data){
                     $no = 1;
-                    foreach ($result as $key => $value) {                  
+                    foreach ($data as $key => $value) {                  
                       echo '<tr>
                               <td>'.$no.'</td>
                               <td>'.$value['kode'].'</td>
@@ -414,10 +439,13 @@
                   <th>+</th>
                 </tr>
                 <?php        
-                  $result = $conn->query("SELECT * FROM tbl_matkul_semester_8");      
-                  if ($result != null){
+                  $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+                  $sth->execute();     
+                  $data = $sth->fetchAll();
+    
+                  if ($data){
                     $no = 1;
-                    foreach ($result as $key => $value) {                  
+                    foreach ($data as $key => $value) {                  
                       echo '<tr>
                               <td>'.$no.'</td>
                               <td>'.$value['kode'].'</td>
@@ -443,8 +471,10 @@
               $pilih = $_POST['pilih'];
               foreach ($pilih as $key => $value) {
                 list($smstr,$id) = explode('-', $value);               
-                $result = $conn->query("SELECT * FROM tbl_matkul_semester_".$smstr." WHERE id='".$id."'");
-                $row = mysqli_fetch_array($result);
+                $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE id='".$id."'");
+                $sth->execute();
+		            $row = $sth->fetch(PDO::FETCH_ASSOC);
+                
                 $conn->query("INSERT INTO tbl_krs (nim,kode,matakuliah,dosen,kelas,wp,sks) VALUES('".$_SESSION['nim']."','".$row['kode']."','".$row['matakuliah']."','".$row['dosen']."','".$row['kelas']."','".$row['wp']."','".$row['sks']."')");
               }              
             }
