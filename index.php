@@ -2,6 +2,7 @@
   session_start();
   $_SESSION['login'] = false;
   require 'action.php';  
+  CloseCon();
 ?>
 <!doctype html>
 <html lang="en">
