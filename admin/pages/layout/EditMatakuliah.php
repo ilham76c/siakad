@@ -201,9 +201,9 @@
                   <div class="col-sm-6">
                     <select name="prodi" class="form-control">     
                       <option selected disabled hidden>- Prodi -</option>
-                      <option value="teknik_informatika" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'teknik_informatika') echo ' selected';?>>TEKNIK INFORMATIKA</option>                                              
-                      <option value="teknik_industri" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'teknik_industri') echo ' selected';?>>TEKNIK INDUSTRI</option>
-                      <option value="teknik_mesin" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'teknik_mesin') echo ' selected';?>>TEKNIK MESIN</option>
+                      <option value="TIF" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'TIF') echo ' selected';?>>TEKNIK INFORMATIKA</option>                                              
+                      <option value="TID" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'TID') echo ' selected';?>>TEKNIK INDUSTRI</option>
+                      <option value="TIM" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'TIM') echo ' selected';?>>TEKNIK MESIN</option>
                     </select>                    
                   </div>                                                      
                 </div>                    
@@ -233,23 +233,25 @@
                         
                   <?php                 
                   if(isset($_GET['lihat'])){
-                    $prd = 'db_'.$_GET['prodi'];
+                    $prd = $_GET['prodi'];
                     $smstr = $_GET['semester'];
-                    $conn = OpenCon($prd);
-                    $result = $conn->query("SELECT * FROM tbl_matkul_semester_".$smstr);
-                    $tbl = 'user';
-                    while($value = mysqli_fetch_array($result)) {
-                      echo '<tr>
-                            <td>'.$value['kode'].'</td>
-                            <td>'.$value['matakuliah'].'</td>
-                            <td>'.$value['dosen'].'</td>
-                            <td>'.$value['kelas'].'</td>
-                            <td>'.$value['wp'].'</td>
-                            <td>'.$value['sks'].'</td>
-                            <td><a href=".././forms/FormEditMatakuliah.php?id='.$value['id'].'&amp;smstr='.$smstr.'&amp;prd='.$prd.'">Edit</a></td>
-                            </tr>';
+                    $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE prodi='$prd' and semester=$smstr");
+                    $sth->execute();     
+                    $data = $sth->fetchAll();
+
+                    foreach ($data as $key => $value) {   
+                      echo '
+                        <tr>
+                          <td>'.$value['kode'].'</td>
+                          <td>'.$value['matakuliah'].'</td>
+                          <td>'.$value['dosen'].'</td>
+                          <td>'.$value['kelas'].'</td>
+                          <td>'.$value['wp'].'</td>
+                          <td>'.$value['sks'].'</td>
+                          <td><a href=".././forms/FormEditMatakuliah.php?id='.$value['id'].'&amp;smstr='.$smstr.'&amp;prd='.$prd.'">Edit</a></td>
+                        </tr>
+                      ';
                     }
-                    CloseCon($conn);
                   }          
                   ?>         
                 </table>                                                                

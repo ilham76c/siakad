@@ -3,8 +3,8 @@
   if ($_SESSION['login'] == false) {
     header("location:../../../index.php");
   }
-  include '../../../koneksi.php';
-  include '../../.././cek/cek_MenuEditMatakuliah.php';
+  require '../../../koneksi.php';
+  require '../../.././cek/cek_MenuEditMatakuliah.php';
   $_SESSION['posisi'] = 'Kelola Matakuliah';
 ?>
 <!DOCTYPE html>
@@ -37,13 +37,13 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
   <?php             
-    $prd = trim($_GET['prd']);
-    $conn = OpenCon($prd);              
-    $id = trim($_GET['id']);
+    $prd = trim($_GET['prd']);           
+    $id = $_GET['id'];
     $smstr = trim($_GET['smstr']);
-    $result = $conn->query("SELECT * FROM tbl_matkul_semester_".$smstr." WHERE id='".$id."'");
-    $row = $result->fetch_assoc();
-    CloseCon($conn);        
+    $conn = OpenCon();
+    $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE id=$id");
+    $sth->execute();
+		$row = $sth->fetch(PDO::FETCH_ASSOC);
   ?> 
 </head>
 <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
@@ -100,9 +100,12 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <?php      
-          $con_menu = OpenCon('db_menu');
-          $result_menu = $con_menu->query("SELECT menu,icon,link,sub FROM tbl_menu_admin ORDER BY id");      
-          foreach ($result_menu as $key => $value) {
+          $conn = OpenCon();
+          $sth = $conn->query("SELECT menu,icon,link,sub FROM tbl_menu_admin ORDER BY id");      
+          $sth->execute();     
+          $data = $sth->fetchAll();
+
+          foreach ($data as $key => $value) {
             $class = '';
             $l = '../layout/';
             if ($value['menu'] == 'Dashboard'){
@@ -114,27 +117,31 @@
             if ($value['sub'] == 'yes'){
               $class = 'treeview '.$class;
             }
-            echo '<li class="'.$class.'">
-                    <a href='.$l.''.$value['link'].'>
-                      <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>';
-                      if ($value['sub'] == 'yes'){
-                        echo '<span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                              </span>';
-                      }
-                    echo '</a>';
+            echo '
+              <li class="'.$class.'">
+                <a href='.$l.''.$value['link'].'>
+                  <i class="'.$value['icon'].'"></i> <span>'.$value['menu'].'</span>';
+                  if ($value['sub'] == 'yes'){
+                    echo '
+                      <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                      </span>
+                    ';
+                  }
+            echo '</a>';
 
-                    if ($value['sub'] == 'yes'){
-                      $result_submenu = $con_menu->query("SELECT submenu,icon,link FROM tbl_submenu_admin WHERE menu='".$value['menu']."'");      
-                      echo '<ul class="treeview-menu">';
-                      foreach ($result_submenu as $key => $value) {
-                        echo '<li><a href="../layout/'.$value['link'].'"><i class="'.$value['icon'].'"></i>'.$value['submenu'].'</a></li>';                              
-                      }
-                      echo '</ul>';
-                    }
+            if ($value['sub'] == 'yes'){
+              $sth = $conn->query("SELECT submenu,icon,link FROM tbl_submenu_admin WHERE menu='".$value['menu']."'");      
+              $sth->execute();     
+              $submenu = $sth->fetchAll();
+              echo '<ul class="treeview-menu">';
+              foreach ($submenu as $key => $value) {
+                echo '<li class="'.($value['submenu'] === 'Edit Matakuliah' ? 'active' : '').'"><a href="../layout/'.$value['link'].'"><i class="'.$value['icon'].'"></i>'.$value['submenu'].'</a></li>';
+              }
+              echo '</ul>';
+            }
             echo '</li>';
           }
-          CloseCon($con_menu);                                                  
         ?>        
       </ul>
     </section>
@@ -185,7 +192,18 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Kode</label>
                   <div class="col-sm-7">
-                    <input name="kode" type="text" class="form-control" placeholder="Kode" value="<?php echo $row['kode'];?>" required>
+                    <!-- <input name="kode" type="text" class="form-control" placeholder="Kode" value="<?php echo $row['kode'];?>" required> -->
+                    <select name="kode" class="form-control" aria-label="Default select example">
+                      <option selected disabled>Open this select menu</option>
+                      <?php
+                        $arr_kode = ['TIF','TID','TIM'];
+                        foreach ($arr_kode as $value) {
+                          for ($i=1; $i <= 8; $i++) { 
+                            echo "<option value='{$value}{$i}'".($row['kode'] == $value.(string)$i ? 'selected' : '').">{$value}{$i}</option>";
+                          }
+                        }
+                      ?>
+                    </select>
                   </div>
                 </div>
                 <div class="form-group">
@@ -208,11 +226,7 @@
                       <?php
                         $kelas = array('A','B','C','D','E');
                         foreach ($kelas as &$value) {
-                          $selected = "";
-                          if ($value == $row['kelas']) {
-                            $selected = "selected";
-                          }
-                          echo "<option value='".$value."' ".$selected.">".$value."</option>";
+                          echo "<option value='".$value."' ".($value == $row['kelas'] ? 'selected' : '').">".$value."</option>";
                         }
                       ?>                                          
                     </select>
@@ -243,14 +257,10 @@
                       <option selected disabled hidden>- Jurusan -</option>
                       <?php
                         $pr = array('TEKNIK INFORMATIKA','TEKNIK INDUSTRI','TEKNIK MESIN');
-                        $pr_val = array('teknik_informatika','teknik_industri','teknik_mesin');
+                        $pr_val = array('TIF','TID','TIM');
                         $prodi = substr($prd, 3);
                         for ($i=0; $i <= 2; $i++) {
-                          $selected = '';
-                          if ($pr_val[$i] == $prodi) {
-                             $selected = 'selected';
-                           } 
-                          echo '<option value="'.$pr_val[$i].'" '.$selected.'>'.$pr[$i].'</option>';
+                          echo '<option value="'.$pr_val[$i].'" '.($prd == $pr_val[$i] ? 'selected' : '').'>'.$pr[$i].'</option>';
                         }
                       ?>                                            
                     </select>
@@ -260,15 +270,11 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Semester</label>
                   <div class="col-sm-7">
-                    <select name="smstr" class="form-control" required>
+                    <select name="semester" class="form-control" required>
                       <option selected disabled hidden>- Semester -</option>
                       <?php                        
                         for ($i=1; $i <= 8 ; $i++) { 
-                          $selected = '';
-                          if ($i == $smstr) {
-                            $selected = 'selected';
-                          }
-                          echo '<option value="'.$i.'" '.$selected.'>'.$i.'</option>';
+                          echo '<option value="'.$i.'" '.($smstr == $i ? 'selected' : '').'>'.$i.'</option>';
                         }
                       ?>                      
                     </select>
@@ -285,10 +291,7 @@
             </form>            
             <?php              
               if(isset($_POST['update'])){
-                //$conn = new PDO('mysql:host=localhost;dbname=db_teknik_informatika','root','');                
-                $conn = OpenCon("db_".$_POST['jurusan']);
-                $result = $conn->query("UPDATE tbl_matkul_semester_".$_POST['smstr']." SET kode='".$_POST['kode']."',matakuliah='".$_POST['matakuliah']."',dosen='".$_POST['dosen']."',kelas='".$_POST['kelas']."',wp='".$_POST['wp']."',sks=".$_POST['sks']." WHERE id=".$id."");
-
+                $conn->query("UPDATE tbl_matakuliah SET kode='".$_POST['kode']."', matakuliah='".$_POST['matakuliah']."', dosen='".$_POST['dosen']."', kelas='".$_POST['kelas']."', wp='".$_POST['wp']."', sks=".$_POST['sks'].", semester=".$_POST['semester'].", prodi='".$_POST['jurusan']."' WHERE id=$id");
               }
             ?>
           </div>

@@ -36,21 +36,15 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
   <?php
-    function deleteAkun(){    
-      $prd = trim($_GET['prd']);
-      $conn = OpenCon($prd);
+    function deleteMatakuliah(){    
       $id = trim($_GET['id']);
-      $smstr = trim($_GET['smstr']);      
-      $result = $conn->query("DELETE FROM tbl_matkul_semester_".$smstr." WHERE id='".$id."'");
-      CloseCon($conn);      
+      $conn = OpenCon();
+      $conn->query("DELETE FROM tbl_matakuliah WHERE id=$id");
     }
   ?> 
   <script type="text/javascript">    
-    function deleteRow(r){      
-      localStorage.setItem();
-      var i = r.parentNode.parentNode.rowIndex;            
-      document.getElementById(parent.id).deleteRow(i);                    
-      document.write('<?php deleteAkun();?>');
+    function deleteRow(){
+      document.write('<?php deleteMatakuliah();?>');
     }
   </script>
   <script type="text/javascript">   
@@ -219,9 +213,9 @@
                   <div class="col-sm-6">
                     <select name="prodi" class="form-control">     
                       <option selected disabled hidden>- Prodi -</option>
-                      <option value="teknik_informatika" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'teknik_informatika') echo ' selected';?>>TEKNIK INFORMATIKA</option>                                              
-                      <option value="teknik_industri" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'teknik_industri') echo ' selected';?>>TEKNIK INDUSTRI</option>
-                      <option value="teknik_mesin" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'teknik_mesin') echo ' selected';?>>TEKNIK MESIN</option>
+                      <option value="TIF" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'TIF') echo ' selected';?>>TEKNIK INFORMATIKA</option>                                              
+                      <option value="TID" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'TID') echo ' selected';?>>TEKNIK INDUSTRI</option>
+                      <option value="TIM" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'TIM') echo ' selected';?>>TEKNIK MESIN</option>
                     </select>                    
                   </div>                                                      
                 </div>                    
@@ -251,12 +245,14 @@
                         
                   <?php                 
                   if(isset($_GET['lihat']) || !empty($_GET['prodi']) && !empty($_GET['semester'])){
-                    $prd = 'db_'.$_GET['prodi'];
+                    $prd = $_GET['prodi'];
                     $smstr = $_GET['semester'];
-                    $conn = OpenCon($prd);
-                    $result = $conn->query("SELECT * FROM tbl_matkul_semester_".$smstr);
-                    $tbl = 'user';
-                    while($value = mysqli_fetch_array($result)) {
+                    $conn = OpenCon();
+                    $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE prodi='$prd' and semester=$smstr");
+                    $sth->execute();     
+                    $data = $sth->fetchAll();
+
+                    foreach ($data as $key => $value) {   
                       echo '<tr>
                             <td>'.$value['kode'].'</td>
                             <td>'.$value['matakuliah'].'</td>
@@ -267,7 +263,6 @@
                             <td><a onclick="deleteRow()" href="?id='.$value['id'].'&amp;smstr='.$smstr.'&amp;prd='.$prd.'">Hapus</a></td>
                             </tr>';
                     }
-                    CloseCon($conn);
                   }          
                   ?>         
                 </table>                                                                

@@ -125,9 +125,7 @@
                         </span>
                       ';
                     }
-                echo '
-                  </a>
-                ';
+                echo '</a>';
   
                 if ($value['sub'] == 'yes'){
                   $sth = $conn->query("SELECT submenu,icon,link FROM tbl_submenu_admin WHERE menu='".$value['menu']."'");      
@@ -190,7 +188,17 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Kode</label>
                   <div class="col-sm-6">
-                    <input name="kode" type="text" class="form-control" placeholder="Kode" value="<?php echo $kode;?>">
+                    <select name="kode" class="form-control" aria-label="Default select example">
+                      <option selected disabled>Open this select menu</option>
+                      <?php
+                        $arr_kode = ['TIF','TID','TIM'];
+                        foreach ($arr_kode as $value) {
+                          for ($i=1; $i <= 8; $i++) { 
+                            echo "<option value='{$value}{$i}'".($kode == $value.(string)$i ? 'selected' : '').">{$value}{$i}</option>";
+                          }
+                        }
+                      ?>
+                    </select>
                   </div>                
                   <label class="control-label"><span class="error">* <?php echo $kodeErr;?></span></label>
                 </div>
@@ -216,11 +224,7 @@
                       <?php
                         $kls = array('A','B','C','D','E');
                         foreach ($kls as $value) {
-                          $selected = '';
-                          if ($value == $kelas) {
-                            $selected = 'selected';
-                          }
-                          echo '<option value="'.$value.'" '.$selected.'>'.$value.'</option>';
+                          echo '<option value="'.$value.'" '.($value == $kelas ? 'selected' : '').'>'.$value.'</option>';
                         }
                       ?>                                                          
                     </select>
@@ -250,9 +254,9 @@
                   <div class="col-sm-6">
                     <select name="jurusan" class="form-control">
                       <option selected disabled hidden>- Jurusan -</option>                      
-                      <option value="teknik_informatika" <?php if($jurusan == 'teknik_informatika') echo ' selected';?>>TEKNIK INFORMATIKA</option>
-                      <option value="teknik_industri" <?php if($jurusan == 'teknik_industri') echo ' selected';?>>TEKNIK INDUSTRI</option>                      
-                      <option value="teknik_mesin" <?php if($jurusan == 'teknik_mesin') echo ' selected';?>>TEKNIK MESIN</option>
+                      <option value="TIF" <?php if($jurusan == 'TIF') echo ' selected';?>>TEKNIK INFORMATIKA</option>
+                      <option value="TID" <?php if($jurusan == 'TID') echo ' selected';?>>TEKNIK INDUSTRI</option>                      
+                      <option value="TIM" <?php if($jurusan == 'TIM') echo ' selected';?>>TEKNIK MESIN</option>
                     </select>
                   </div>
                   <label class="control-label"><span class="error">* <?php echo $jurusanErr;?></span></label>
@@ -264,11 +268,7 @@
                       <option selected disabled hidden>- Semester -</option>                      
                       <?php                      
                         for ($i=1; $i <= 8 ; $i++) { 
-                          $selected = '';
-                          if (strval($i) == $semester) {
-                            $selected = 'selected';
-                          }
-                          echo '<option value="'.$i.'" '.$selected.'>'.$i.'</option>';
+                          echo '<option value="'.$i.'" '.(strval($i) == $semester ? 'selected' : '').'>'.$i.'</option>';
                         }
                       ?>
                     </select>

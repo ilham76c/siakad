@@ -99,7 +99,7 @@
 
             if($validKode == true && $validMatakuliah == true && $validDosen == true && $validKelas == true && $validSks == true && $validPrasyarat == true && $validJurusan == true && $validSemester = true){
                 $conn = OpenCon();
-                $conn->query("INSERT INTO tbl_matakuliah (kode,matakuliah,dosen,kelas,wp,sks) VALUES('".$kode."','".$matakuliah."','".$dosen."','".$kelas."','".$prasyarat."',".$sks.")");
+                $conn->query("INSERT INTO tbl_matakuliah (kode,matakuliah,dosen,kelas,wp,sks,semester,prodi) VALUES('$kode','$matakuliah','$dosen','$kelas','$prasyarat',$sks,$semester,'$jurusan')");
                 echo "<script>alert('Matakuliah Berhasil Ditambah!!');</script>";
             }
         }          
