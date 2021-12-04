@@ -1,10 +1,9 @@
 <?php            
       function test_input($data) {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
-      }			// define variables and set to empty values
+        return htmlspecialchars(stripslashes(trim($data)));
+      }			
+
+      // define variables and set to empty values
 			$kodeErr = $matakuliahErr = $dosenErr = $kelasErr = $sksErr = $prasyaratErr = $jurusanErr = $semesterErr = "";
 			$kode = $matakuliah = $dosen = $kelas = $sks = $prasyarat = $jurusan = $semester = "";
       $validKode = $validMatakuliah = $validDosen = $validKelas = $validSks = $validPrasyarat = $validJurusan = $validSemester = false;      
@@ -99,9 +98,8 @@
 
 
             if($validKode == true && $validMatakuliah == true && $validDosen == true && $validKelas == true && $validSks == true && $validPrasyarat == true && $validJurusan == true && $validSemester = true){
-                $db = "db_".$_POST['jurusan'];
-                $conn = mysqli_connect('localhost','root','',$db) or die("Koneksi Gagal: %s\n". $conn->error);                
-                $result = $conn->query("INSERT INTO tbl_matkul_semester_".$semester." (kode,matakuliah,dosen,kelas,wp,sks) VALUES('".$kode."','".$matakuliah."','".$dosen."','".$kelas."','".$prasyarat."',".$sks.")");
+                $conn = OpenCon();
+                $conn->query("INSERT INTO tbl_matakuliah (kode,matakuliah,dosen,kelas,wp,sks) VALUES('".$kode."','".$matakuliah."','".$dosen."','".$kelas."','".$prasyarat."',".$sks.")");
                 echo "<script>alert('Matakuliah Berhasil Ditambah!!');</script>";
             }
         }          
