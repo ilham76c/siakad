@@ -47,18 +47,6 @@
       document.write('<?php deleteMatakuliah();?>');
     }
   </script>
-  <script type="text/javascript">   
-    function men(){      
-      var a = document.getElementById('menu').value;               
-        if(a == 'user'){          
-          $('#tabel_menu_user').collapse('show');
-          $('#tabel_menu_admin').collapse('hide');        }                  
-        if(a == 'admin'){           
-          $('#tabel_menu_admin').collapse('show');
-          $('#tabel_menu_user').collapse('hide');
-        }     
-      }
-  </script>
 </head>
 <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
 <!-- the fixed layout is not compatible with sidebar-mini -->
