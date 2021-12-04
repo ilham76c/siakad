@@ -192,18 +192,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Kode</label>
                   <div class="col-sm-7">
-                    <!-- <input name="kode" type="text" class="form-control" placeholder="Kode" value="<?php echo $row['kode'];?>" required> -->
-                    <select name="kode" class="form-control" aria-label="Default select example">
-                      <option selected disabled>Open this select menu</option>
-                      <?php
-                        $arr_kode = ['TIF','TID','TIM'];
-                        foreach ($arr_kode as $value) {
-                          for ($i=1; $i <= 8; $i++) { 
-                            echo "<option value='{$value}{$i}'".($row['kode'] == $value.(string)$i ? 'selected' : '').">{$value}{$i}</option>";
-                          }
-                        }
-                      ?>
-                    </select>
+                    <input name="kode" type="text" class="form-control" placeholder="Kode" value="<?php echo $row['kode'];?>" readonly required>
                   </div>
                 </div>
                 <div class="form-group">

@@ -16,16 +16,16 @@
         }
         if(isset($_POST['tambah'])){                                   
             // CEK KODE
-            if (empty($_POST["kode"])) {
-              $kodeErr = "kode is required";
-            } else {   
-              $kode = test_input($_POST['kode']);         
-              if(!preg_match("/^[a-zA-Z0-9]*$/", $kode)){
-                $kodeErr = "Format kode Salah";
-              }else{
-                $validKode = true;
-              }
-            }
+            // if (empty($_POST["kode"])) {
+            //   $kodeErr = "kode is required";
+            // } else {   
+            //   $kode = test_input($_POST['kode']);         
+            //   if(!preg_match("/^[a-zA-Z0-9]*$/", $kode)){
+            //     $kodeErr = "Format kode Salah";
+            //   }else{
+            //     $validKode = true;
+            //   }
+            // }
             // CEK MATAKULIAH
             if (empty($_POST["matakuliah"])) {
               $matakuliahErr = "Matakuliah is required";
@@ -97,9 +97,9 @@
             }
 
 
-            if($validKode == true && $validMatakuliah == true && $validDosen == true && $validKelas == true && $validSks == true && $validPrasyarat == true && $validJurusan == true && $validSemester = true){
+            if($validMatakuliah == true && $validDosen == true && $validKelas == true && $validSks == true && $validPrasyarat == true && $validJurusan == true && $validSemester = true){
                 $conn = OpenCon();
-                $conn->query("INSERT INTO tbl_matakuliah (kode,matakuliah,dosen,kelas,wp,sks,semester,prodi) VALUES('$kode','$matakuliah','$dosen','$kelas','$prasyarat',$sks,$semester,'$jurusan')");
+                $conn->query("INSERT INTO tbl_matakuliah (kode,matakuliah,dosen,kelas,wp,sks,semester,prodi) VALUES('".$jurusan.(string)$semester."','$matakuliah','$dosen','$kelas','$prasyarat',$sks,$semester,'$jurusan')");
                 echo "<script>alert('Matakuliah Berhasil Ditambah!!');</script>";
             }
         }          

@@ -184,24 +184,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <form class="form-horizontal col-lg-8" method="post">
-              <div class="box-body">                
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Kode</label>
-                  <div class="col-sm-6">
-                    <select name="kode" class="form-control" aria-label="Default select example">
-                      <option selected disabled>Open this select menu</option>
-                      <?php
-                        $arr_kode = ['TIF','TID','TIM'];
-                        foreach ($arr_kode as $value) {
-                          for ($i=1; $i <= 8; $i++) { 
-                            echo "<option value='{$value}{$i}'".($kode == $value.(string)$i ? 'selected' : '').">{$value}{$i}</option>";
-                          }
-                        }
-                      ?>
-                    </select>
-                  </div>                
-                  <label class="control-label"><span class="error">* <?php echo $kodeErr;?></span></label>
-                </div>
+              <div class="box-body">
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Matakuliah</label>
                   <div class="col-sm-6">
