@@ -153,9 +153,9 @@
                 <div class="col-sm-5">
                   <select name="prodi" class="select form-control">
                     <option selected disabled hidden>- Prodi -</option>
-                      <option value="teknik_informatika" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'teknik_informatika') echo ' selected';?>>TEKNIK INFORMATIKA</option>                                              
-                      <option value="teknik_industri" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'teknik_industri') echo ' selected';?>>TEKNIK INDUSTRI</option>
-                      <option value="teknik_mesin" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'teknik_mesin') echo ' selected';?>>TEKNIK MESIN</option>
+                      <option value="TIF" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'TIF') echo ' selected';?>>TEKNIK INFORMATIKA</option>                                              
+                      <option value="TID" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'TID') echo ' selected';?>>TEKNIK INDUSTRI</option>
+                      <option value="TIM" <?php if(isset($_GET['prodi']) && $_GET['prodi'] == 'TIM') echo ' selected';?>>TEKNIK MESIN</option>
                   </select>                  
                 </div>                
                 <button name="lihat" class="col-sm-1 btn btn-primary">lihat</button>                
@@ -165,13 +165,6 @@
        
             <!-- tambahan test sliding untuk per paket semester -->
    <div style="clear:both">
-      <?php        
-        // if(isset($_GET['lihat'])){
-        //   if(!empty($_GET['prodi'])){
-        //     $conn = OpenCon();
-        //   }
-        // }
-      ?>
       <a name="smstr_1" class="btn-block" href="#semester_1" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="semester_1" hidden>Paket Semester 1</a><br>
       <div id="semester_1" class="collapse">            
         <table class="table table-bordered table-striped" width="100%">
@@ -186,7 +179,7 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){
-              $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE semester=1 and prodi='".$_GET['prodi']."'");
               $sth->execute();     
               $data = $sth->fetchAll();
 
@@ -223,7 +216,7 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){
-              $sth = $conn->query("SELECT * FROM tbl_matakuliah");  
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE semester=2 and prodi='".$_GET['prodi']."'");
               $sth->execute();     
               $data = $sth->fetchAll();    
 
@@ -261,7 +254,7 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $sth = $conn->query("SELECT * FROM tbl_matakuliah");
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE semester=3 and prodi='".$_GET['prodi']."'");
               $sth->execute();     
               $data = $sth->fetchAll(); 
 
@@ -299,7 +292,7 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $sth = $conn->query("SELECT * FROM tbl_matakuliah");
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE semester=4 and prodi='".$_GET['prodi']."'");
               $sth->execute();     
               $data = $sth->fetchAll(); 
 
@@ -337,7 +330,7 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE semester=5 and prodi='".$_GET['prodi']."'");
               $sth->execute();     
               $data = $sth->fetchAll();
 
@@ -375,7 +368,7 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE semester=6 and prodi='".$_GET['prodi']."'");
               $sth->execute();     
               $data = $sth->fetchAll();
 
@@ -412,7 +405,7 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE semester=7 and prodi='".$_GET['prodi']."'");
               $sth->execute();     
               $data = $sth->fetchAll();
 
@@ -449,7 +442,7 @@
           </tr>
           <?php
             if(isset($_GET['lihat'])){                  
-              $sth = $conn->query("SELECT * FROM tbl_matakuliah");      
+              $sth = $conn->query("SELECT * FROM tbl_matakuliah WHERE semester=8 and prodi='".$_GET['prodi']."'");
               $sth->execute();     
               $data = $sth->fetchAll();
 
